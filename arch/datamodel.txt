@@ -1,0 +1,14 @@
+database selection:
+  - oracle (go with oracle)
+  - sqlite
+  - mongodb
+  - cassandra
+
+table design
+  - entities:
+    - Item
+    - Bill
+    - Sale
+    - Customer
+    - Purchase
+    - PurchaseBill

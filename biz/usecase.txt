@@ -1,0 +1,17 @@
+shopkeeper wants: 
+  - to maintain inventory
+  - to record the bulk purchasing from farmers
+  - to record the profit and loss
+  - manage vendors
+  - manage brokers
+  - automatic billing
+    - save bills per customer
+    - handle returns (make policy)
+    - single bill for multiple items per customer
+  
+customer wants:
+  - to buy multiple items
+  - a bill (printed out)
+    - per item price
+    - total price
+  - to return damaged/spoilt items
