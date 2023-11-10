@@ -15,3 +15,24 @@ customer wants:
     - per item price
     - total price
   - to return damaged/spoilt items
+
+inventory items
+  - rice
+  - dal
+  - potato
+  - tomato
+  - cauliflower
+  - country beans
+  - carrot
+  - onion
+  - garlic
+  - ginger
+  - turmeric
+  - salt
+  - tea powder
+  - jaggery
+  - sugar
+  - chilli
+  - cooking oil
+  - rava
+

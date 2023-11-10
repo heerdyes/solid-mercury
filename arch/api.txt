@@ -1,0 +1,6 @@
+source crud
+  - /api/v0/createsource
+  - /api/v0/getsource
+  - /api/v0/updatesource
+  - /api/v0/deletesource
+
