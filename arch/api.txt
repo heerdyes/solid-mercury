@@ -4,3 +4,7 @@ source crud
   - /api/v0/updatesource
   - /api/v0/deletesource
 
+  - /api/v0/createcustomer
+  - /api/v0/getcustomer
+  - /api/v0/
+
