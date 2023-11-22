@@ -23,4 +23,5 @@ urlpatterns = [
     path('api/v0/createcustomer/',views.create_customer),
     path('api/v0/createsource/',views.create_source),
     path('api/v0/createcategory/',views.create_category),
+    path('api/v0/createprocbill/',views.create_procbill),
 ]
