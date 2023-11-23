@@ -20,11 +20,7 @@ def get_customers(rq):
     cs = Customer.objects.all()
     rj = []
     for c in cs:
-        rj.append({
-            'id': c.id,
-            'name': c.name,
-            'phnum': c.phnum
-        })
+        rj.append(c.dictform())
     return JsonResponse({'d': rj})
 
 @require_POST
@@ -40,13 +36,9 @@ def edit_customer(rq, custid):
 @require_http_methods(['DELETE'])
 def delete_customer(rq, custid):
     c = Customer.objects.get(pk=custid)
-    cust = {
-        'id': c.id,
-        'name': c.name,
-        'phnum': c.phnum
-    }
+    cj = c.dictform()
     c.delete()
-    return JsonResponse(cust)
+    return JsonResponse(cj)
 
 # source curd
 @require_POST
@@ -62,14 +54,7 @@ def get_sources(rq):
     srcs = Source.objects.all()
     rj = []
     for s in srcs:
-        rj.append({
-            'id': s.id,
-            'estname': s.estname,
-            'esttype': s.esttype,
-            'owner': s.owner,
-            'phnum': s.phnum,
-            'address': s.address
-        })
+        rj.append(s.dictform())
     return JsonResponse({'d': rj})
 
 @require_POST
@@ -87,14 +72,7 @@ def edit_source(rq, srcid):
 @require_http_methods(['DELETE'])
 def delete_source(rq, srcid):
     s = Source.objects.get(pk=srcid)
-    rj = {
-        'id': s.id,
-        'estname': s.estname,
-        'esttype': s.esttype,
-        'owner': s.owner,
-        'phnum': s.phnum,
-        'address': s.address
-    }
+    rj = s.dictform()
     s.delete()
     return JsonResponse(rj)
 
@@ -104,12 +82,7 @@ def get_categories(rq):
     cats = Category.objects.all()
     rj = []
     for c in cats:
-        rj.append({
-            'id': c.id,
-            'generalname': c.generalname,
-            'specificname': c.specificname,
-            'comments': c.comments
-        })
+        rj.append(c.dictform())
     return JsonResponse({'d': rj})
 
 @require_POST
@@ -133,12 +106,7 @@ def edit_category(rq, catid):
 @require_http_methods(['DELETE'])
 def delete_category(rq, catid):
     c = Category.objects.get(pk=catid)
-    cj = {
-        'id': c.id,
-        'generalname': c.generalname,
-        'specificname': c.specificname,
-        'comments': c.comments
-    }
+    cj = c.dictform()
     c.delete()
     return JsonResponse(cj)
 
@@ -148,34 +116,120 @@ def get_procbills(rq):
     pbs = Procbill.objects.all()
     rj = []
     for p in pbs:
-        rj.append({
-            'id': p.id,
-            'createdon': p.createdon,
-            'paid': p.paid,
-            'source': {
-                'estname': p.source.estname,
-                'esttype': p.source.esttype,
-                'owner': p.source.owner,
-                'phnum': p.source.phnum,
-                'address': p.source.address
-            }
-        })
+        rj.append(p.dictform())
     return JsonResponse({'d': rj})
 
 @require_POST
-def create_procbill(rq, srcid):
+def create_procbill(rq):
     pbj = json.loads(rq.body.decode('utf-8'))
-    src = Source.objects.get(pk=srcid)
+    src = Source.objects.get(pk=pbj['sourceid'])
     pb = Procbill(paid=pbj['paid'], source=src)
     pb.save()
-    pbj['id'] = pb.id
-    pbj['createdon'] = pb.createdon
-    pbj['source'] = {
-        'estname': src.estname,
-        'esttype': src.esttype,
-        'owner': src.owner,
-        'phnum': src.phnum,
-        'address': src.address
-    }
-    return JsonResponse(pbj)
+    return JsonResponse(pb.dictform())
+
+@require_POST
+def edit_procbill(rq, pbid):
+    pbj = json.loads(rq.body.decode('utf-8'))
+    pb = Procbill.objects.get(pk=pbid)
+    src = pb.source
+    pb.paid = pbj['paid']
+    pb.save()
+    return JsonResponse(pb.dictform())
+
+# for now do not allow deletion of procbills
+
+# purchase curd
+@require_POST
+def create_purchase(rq):
+    pj = json.loads(rq.body.decode('utf-8'))
+    cat = Category.objects.get(pk=pj['categoryid'])
+    pb = Procbill.objects.get(pk=pj['procbillid'])
+    p = Purchase(category=cat, qty=pj['qty'], price=pj['price'], procbill=pb)
+    p.save()
+    pj['id'] = p.id
+    return JsonResponse(pj)
+
+@require_GET
+def get_purchases(rq):
+    ps = Purchase.objects.all()
+    rj = []
+    for p in ps:
+        rj.append(p.dictform())
+    return JsonResponse({'d': rj})
+
+# since a purchase is transactional let us not allow its updation/deletion
+
+# batch curd
+@require_POST
+def create_batch(rq):
+    bj = json.loads(rq.body.decode('utf-8'))
+    p = Purchase.objects.get(pk=bj['purchaseid'])
+    b = Batch(expireson=bj['expireson'], sp=bj['sp'], purchase=p)
+    b.save()
+    bj['id'] = b.id
+    return JsonResponse(bj)
+
+@require_GET
+def get_batches(rq):
+    bs = Batch.objects.all()
+    rj = []
+    for b in bs:
+        rj.append(b.dictform())
+    return JsonResponse({'d': rj})
+
+@require_POST
+def edit_batch(rq, bid):
+    b = Batch.objects.get(pk=bid)
+    bj = json.loads(rq.body.decode('utf-8'))
+    if bj['purchaseid'] != b.purchase.id:
+        p = Purchase.objects.get(pk=bj['purchaseid'])
+        b.purchase = p
+    b.sp = bj['sp']
+    b.expireson = bj['expireson']
+    b.save()
+    return JsonResponse(bj)
+
+# delete batch does not make sense
+
+# custbill curd
+@require_POST
+def create_custbill(rq):
+    cbj = json.loads(rq.body.decode('utf-8'))
+    c = Customer.objects.get(pk=cbj['customerid'])
+    cb = Custbill(paid=cbj['paid'], customer=c)
+    cb.save()
+    return JsonResponse(cb.dictform())
+
+@require_GET
+def get_custbills(rq):
+    rj = []
+    for cb in Custbill.objects.all():
+        rj.append(cb.dictform())
+    return JsonResponse({'d': rj})
+
+@require_GET
+def custbill_paid(rq, cbid):
+    cb = Custbill.objects.get(pk=cbid)
+    cb.paid = 1
+    cb.save()
+    return JsonResponse(cb.dictform())
+
+# no deletion required for customer bills, maybe archiving at a later point
+
+# sale curd
+@require_POST
+def create_sale(rq):
+    sj = json.loads(rq.body.decode('utf-8'))
+    b = Batch.objects.get(pk=sj['batchid'])
+    cb = Custbill.objects.get(pk=sj['custbillid'])
+    s = Sale(batch=b, qty=sj['qty'], price=sj['price'], custbill=cb)
+    s.save()
+    return JsonResponse(s.dictform())
+
+@require_GET
+def get_sales(rq):
+    rj = []
+    for s in Sale.objects.all():
+        rj.append(s.dictform())
+    return JsonResponse({'d': rj})
 

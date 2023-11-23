@@ -7,6 +7,13 @@ class Customer(models.Model):
     
     def __str__(self):
         return '%s (%s)'%(self.name, self.phnum)
+        
+    def dictform(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'phnum': self.phnum
+        }
 
 
 class Source(models.Model):
@@ -18,6 +25,16 @@ class Source(models.Model):
     
     def __str__(self):
         return '%s (%s), %s'%(self.estname, self.esttype, self.owner)
+    
+    def dictform(self):
+        return {
+            'id': self.id,
+            'estname': self.estname,
+            'esttype': self.esttype,
+            'owner': self.owner,
+            'phnum': self.phnum,
+            'address': self.address
+        }
 
 
 class Category(models.Model):
@@ -27,6 +44,14 @@ class Category(models.Model):
     
     def __str__(self):
         return '%s (%s) [%s]'%(self.generalname, self.specificname, self.comments)
+        
+    def dictform(self):
+        return {
+            'id': self.id,
+            'generalname': self.generalname,
+            'specificname': self.specificname,
+            'comments': self.comments
+        }
 
 
 class Procbill(models.Model):
@@ -36,6 +61,14 @@ class Procbill(models.Model):
     
     def __str__(self):
         return '[%d] %s, %s'%(self.id, str(self.createdon), 'paid' if self.paid == 1 else 'pending')
+    
+    def dictform(self):
+        return {
+            'id': self.id,
+            'createdon': self.createdon,
+            'paid': self.paid,
+            'source': self.source.dictform()
+        }
 
 
 class Purchase(models.Model):
@@ -46,6 +79,15 @@ class Purchase(models.Model):
     
     def __str__(self):
         return 'item: %s, qty: %f, price: %f, billid: %d'%(str(self.category), self.qty, self.price, self.procbill.id)
+    
+    def dictform(self):
+        return {
+            'id': self.id,
+            'category': self.category.dictform(),
+            'qty': self.qty,
+            'price': self.price,
+            'procbill': self.procbill.dictform()
+        }
 
 
 class Batch(models.Model):
@@ -55,6 +97,14 @@ class Batch(models.Model):
     
     def __str__(self):
         return 'usebefore: %s, mrp: %f'%(str(self.expireson), self.sp)
+        
+    def dictform(self):
+        return {
+            'id': self.id,
+            'expireson': self.expireson,
+            'sp': self.sp,
+            'purchase': self.purchase.dictform()
+        }
 
 
 class Custbill(models.Model):
@@ -64,6 +114,13 @@ class Custbill(models.Model):
     
     def __str__(self):
         return 'bill for %s, date: %s, %s'%(str(self.customer), str(self.createdon), 'paid' if self.paid == 1 else 'pending')
+    
+    def dictform(self):
+        return {
+            'createdon': self.createdon,
+            'paid': self.paid,
+            'customer': self.customer.dictform()
+        }
 
 
 class Sale(models.Model):
@@ -74,6 +131,14 @@ class Sale(models.Model):
     
     def __str__(self):
         return '%s, %f, %f, [%s]'%(self.batch.purchase.category.generalname, self.qty, self.price, str(self.custbill))
+    
+    def dictform(self):
+        return {
+            'qty': self.qty,
+            'price': self.price,
+            'batch': self.batch.dictform(),
+            'custbill': self.custbill.dictform()
+        }
 
 
 class Stock(models.Model):
