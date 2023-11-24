@@ -1,0 +1,11 @@
+<html>
+<head><title>DTL</title></head>
+<body>
+  <h1>check</h1>
+  <ul>
+    {% for cust in customers %}
+      <li>[{{cust.id}}] {{cust.name}} / {{cust.phnum}}</li>
+    {% endfor %}
+  </ul>
+</body>
+</html>

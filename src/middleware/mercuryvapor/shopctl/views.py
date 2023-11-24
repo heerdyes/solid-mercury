@@ -1,9 +1,20 @@
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.core.exceptions import PermissionDenied
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
+from django.template import loader
 import json
 from .models import *
+
+
+# homepage
+def custpage(rq):
+    tmpl = loader.get_template('shopctl/customers.html')
+    cs = Customer.objects.all()
+    d = {
+        'customers': cs
+    }
+    return HttpResponse(tmpl.render(d, rq))
 
 
 # customer curd

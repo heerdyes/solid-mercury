@@ -2,6 +2,8 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
+    # templates
+    path('ui/customers', custpage),
     # customer curd
     path('createcustomer', create_customer),
     path('customers', get_customers),
