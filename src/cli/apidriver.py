@@ -245,6 +245,31 @@ def tp():
     response = requests.request("GET", url, headers=headers, data=payload)
     print(json.dumps(response.json(), indent=2))
 
+def ar():
+    url = apiurl + 'sales'
+    payload = {}
+    headers = {}
+    response = requests.request("GET", url, headers=headers, data=payload)
+    print(json.dumps(response.json(), indent=2))
+
+def ac():
+    url = apiurl + 'createsale'
+    print('/// batches:')
+    br()
+    print('/// custbills:')
+    tr()
+    payload = json.dumps({
+      'batchid': int(input('[sale] batchid: ')),
+      'custbillid': int(input('[sale] custbillid: ')),
+      'qty': float(input('[sale] qty: ')),
+      'price': float(input('[sale] price: '))
+    })
+    headers = {
+      'Content-Type': 'application/json'
+    }
+    response = requests.request("POST", url, headers=headers, data=payload)
+    print(json.dumps(response.json(), indent=2))
+
 # flow
 while True:
     print('\n---- entity menu ----')
@@ -255,11 +280,21 @@ while True:
     print('u. purchase')
     print('b. batch')
     print('t. custbill')
+    print('a. sales')
     print('q. quit')
     ch = input('-> ')
     if ch == 'q':
         break
-    if ch == 't':
+    if ch == 'a':
+        while True:
+            x = input('\n[sales] choose (c/u/r/d/q): ')
+            if x == 'q':
+                break
+            if x == 'r':
+                ar()
+            elif x == 'c':
+                ac()
+    elif ch == 't':
         while True:
             x = input('\n[custbill] choose (c/p/r/d/q): ')
             if x == 'q':

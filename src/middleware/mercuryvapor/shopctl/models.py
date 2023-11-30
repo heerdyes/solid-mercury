@@ -117,6 +117,7 @@ class Custbill(models.Model):
     
     def dictform(self):
         return {
+            'id': self.id,
             'createdon': self.createdon,
             'paid': self.paid,
             'customer': self.customer.dictform()

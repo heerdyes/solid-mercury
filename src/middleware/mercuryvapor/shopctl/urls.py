@@ -37,5 +37,6 @@ urlpatterns = [
     path('custbillpaid/<int:cbid>', custbill_paid),
     # sale curd
     path('createsale', create_sale),
+    path('sales', get_sales),
 ]
 
