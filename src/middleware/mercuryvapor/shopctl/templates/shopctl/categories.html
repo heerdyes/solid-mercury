@@ -1,0 +1,32 @@
+<html>
+<head>
+  <title>shop</title>
+  {{ stylefrag }}
+</head>
+<body>
+  {{ hdrfrag }}
+  <section>
+    <h2>Categories</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>id</th>
+          <th>generalname</th>
+          <th>specificname</th>
+          <th>comments</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for c in categories %}
+      <tr>
+        <td>[{{c.id}}]</td>
+        <td>{{c.generalname}}</td>
+        <td>{{c.specificname}}</td>
+        <td>{{c.comments}}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </section>
+</body>
+</html>

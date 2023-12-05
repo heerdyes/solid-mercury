@@ -7,15 +7,58 @@ import json
 from .models import *
 
 
-# homepage
+# utility functions
+def genhdr(rq):
+    hdr = loader.get_template('shopctl/header.html')
+    return hdr.render({
+        'links': ['customers', 'sources', 'categories', 'procbills']
+    }, rq)
+
+def genstyle(rq):
+    sty = loader.get_template('shopctl/styles.html')
+    return sty.render({}, rq)
+
+def symtab(rq):
+    return {
+        'hdrfrag': genhdr(rq),
+        'stylefrag': genstyle(rq)
+    }
+
+# pages
 def custpage(rq):
     tmpl = loader.get_template('shopctl/customers.html')
     cs = Customer.objects.all()
-    d = {
-        'customers': cs
-    }
+    d = symtab(rq)
+    d['customers'] = cs
     return HttpResponse(tmpl.render(d, rq))
 
+def srcpage(rq):
+    tmpl = loader.get_template('shopctl/sources.html')
+    ss = Source.objects.all()
+    d = symtab(rq)
+    d['sources'] = ss
+    return HttpResponse(tmpl.render(d, rq))
+
+def catpage(rq):
+    tmpl = loader.get_template('shopctl/categories.html')
+    cats = Category.objects.all()
+    d = symtab(rq)
+    d['categories'] = cats
+    return HttpResponse(tmpl.render(d, rq))
+
+def procbillpage(rq):
+    tmpl = loader.get_template('shopctl/procbills.html')
+    pbs = Procbill.objects.all()
+    d = symtab(rq)
+    d['procbills'] = pbs
+    return HttpResponse(tmpl.render(d, rq))
+
+def purchasepage(rq):
+    tmpl = loader.get_template('shopctl/purchases.html')
+    ps = Purchase.objects.all()
+    d = symtab(rq)
+    d['purchases'] = ps
+    return HttpResponse(tmpl.render(d, rq))
 
 # customer curd
 @require_POST

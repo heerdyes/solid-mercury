@@ -6,22 +6,24 @@
 <body>
   {{ hdrfrag }}
   <section>
-    <h2>Customers</h2>
+    <h2>Procurement bills</h2>
     <table>
       <thead>
         <tr>
           <th>id</th>
-          <th>name</th>
-          <th>phnum</th>
+          <th>createdon</th>
+          <th>paid</th>
+          <th>source</th>
         </tr>
       </thead>
       <tbody>
-      {% for cust in customers %}
+      {% for pb in procbills %}
       <tr>
-        <td>[{{cust.id}}]</td>
-        <td>{{cust.name}}</td>
-        <td>{{cust.phnum}}</td>
-      </tr>
+        <td>[{{pb.id}}]</td>
+        <td>{{pb.createdon}}</td>
+        <td>{{pb.paid}}</td>
+        <td>{{pb.source.estname}}</td>
+        </tr>
       {% endfor %}
       </tbody>
     </table>
